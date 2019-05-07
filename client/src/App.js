@@ -1,26 +1,34 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import { config } from './utils/config';
+import { isLocalMode } from './utils/helpers';
+
+import Axios from 'axios';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      config: null
+    }
+  }
+  componentDidMount() {
+    let correctConfig = {};
+    if (isLocalMode()) {
+      correctConfig = config.dev
+    } else {
+      correctConfig = config.prod
+    }
+    this.setState({
+      config: correctConfig
+    }, async () => {
+      const result = await Axios.get(`${this.state.config.serverURL}questions/topics`);
+      console.log(result);
+    })
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      null
     );
   }
 }
